@@ -10,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -73,25 +75,33 @@ public class EmployeeServiceTests {
     @DisplayName("JUnit test for saveEmployee method which throws Exception")
     public void givenExistingEmail_whenSaveEmployee_throwsException(){
         //given - precondition or setup
-        given(employeeRepository.findByEmail(employee.getEmail())).willReturn(Optional.of(employee));
-        //given(employeeRepository.save(employee)).willReturn(employee); //Extra stubbing not required
+        given(employeeRepository.findByEmail(employee.getEmail())).willReturn(Optional.of(employee)); // as we want exception ,so we want to have employee of same email
+
+        //given(employeeRepository.save(employee)).willReturn(employee); //Extra stubbing not required, as after exception control won't go to this method in serviceImpl class
 
         System.out.println(employeeRepository);
         System.out.println(employeeService);
 
         //when - action or the behaviour that we are going test
         /* asserThrows:
-         "Assert" that execution of the supplied executable throws an exception of the expectedType and return the exception.
+         **check document**
+         assert that execution of the supplied executable(lambda) throws an exception of the expectedType and return the exception.
          Here the saveEmployee() is the executable method which throws exception from service class.
-         If no exception is thrown, or if an exception of a different type is thrown, this method will fail.If you do not want to perform additional checks on the exception instance,ignore the return value.*/
+         If no exception is thrown, or if an exception of a different type is thrown, this method will fail.
+        */
 
-        org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             employeeService.saveEmployee(employee);
         });
 
         //then
-        //writing this so that the code doesn't execute after the exception of if block in serviceImpl class
-        verify(employeeRepository, never()).save(any(Employee.class));
+         /*
+         **check document**
+        writing this so that the code doesn't execute after the exception of if block in serviceImpl class
+        This line uses Mockito's verify method to check that the save method of employeeRepository is never called
+        with any Employee object passed as an argument. If it's called, the test will fail.
+         */
+        verify(employeeRepository, never()).save(any(Employee.class));  // any() indicates that the method should match any argument of type Employee.
     }
 
     //JUnit test for getAllEmployees method
@@ -108,7 +118,7 @@ public class EmployeeServiceTests {
         given(employeeRepository.findAll()).willReturn(List.of(employee,employee1));
 
         //when - action or the behaviour that we are going test
-        List<Employee> employeeList = employeeService.getAllEmployees();
+        List<Employee> employeeList = employeeService.getAllEmployees(); //this will internally call findAll(), which will return List.of(), and we stubbed findAll()
 
         //then - verify the output
         assertThat(employeeList).isNotNull();
@@ -120,16 +130,11 @@ public class EmployeeServiceTests {
     @DisplayName("JUnit test for getAllEmployees method - negative scenario")
     public void givenEmployeeList_whenGetAllEmployees_thenReturnEmptyEmployeeList(){
         //given - precondition or setup
-        Employee employee1 = Employee.builder().
-                firstName("Leo").
-                lastName("Messi").
-                email("LM10@barca.com").
-                build();
 
         given(employeeRepository.findAll()).willReturn(Collections.emptyList()); //Empty list
 
         //when - action or the behaviour that we are going test
-        List<Employee> employeeList = employeeService.getAllEmployees();
+        List<Employee> employeeList = employeeService.getAllEmployees(); //this will internally call findAll(), which will return empty list, and we stubbed findAll()
 
         //then - verify the output
         assertThat(employeeList).isEmpty();
@@ -169,20 +174,64 @@ public class EmployeeServiceTests {
         assertThat(updatedEmployee).isNotNull();
     }
 
+
     //JUnit test for deleteEmployee method
+    // where an existing employee is successfully deleted. It ensures that the findById method is called once
+    // with the specified ID and that the deleteById method is also called once.
     @Test
     @DisplayName("JUnit test for deleteEmployee method")
     public void givenEmployeeId_whenDeleteEmployee_thenNothing(){
-        //given - precondition or setup
+        long empId = 1L;
 
-        willDoNothing().given(employeeRepository).deleteById(employee.getId());
+        //given
+        // Stubbing findById to return an existing employee
+        given(employeeRepository.findById(empId)).willReturn(Optional.of(employee));
 
-        //when - action or the behaviour that we are going test
-        employeeService.deleteEmployee(employee.getId());
+        //when
+        // Call deleteEmployee method
+        employeeService.deleteEmployee(empId);
 
-        //then - verify the output
-        //As delete method is not returning anything so we can't validate/verify output
-        //So we will validate how many times deleteById has been called
-        verify(employeeRepository, times(1)).deleteById(employee.getId());
+        //then
+        // Verify that findById was called once with the specified ID
+        verify(employeeRepository, times(1)).findById(empId);
+
+        // Verify that deleteById was called once with the specified ID
+        verify(employeeRepository, times(1)).deleteById(empId);
+    }
+
+    //JUnit test for deleteEmployee method
+    //where a non-existing employee ID is provided for deletion. It ensures that the findById method is called once
+    //with the specified ID and that the deleteById method is not called.
+    //It also verifies that a ResourceNotFoundException is thrown with the correct error message.
+    @Test
+    @DisplayName("Delete non-existing employee")
+    void givenNonExistingEmployeeId_whenDeleteEmployee_thenResourceNotFoundExceptionThrown() {
+        long empId = 1L;
+
+        //given
+        // Stubbing findById to return an empty Optional
+        given(employeeRepository.findById(empId)).willReturn(Optional.empty());
+
+        //when
+        // Call deleteEmployee method and assert ResourceNotFoundException is thrown
+        //assertThrows(ResourceNotFoundException.class, () -> employeeService.deleteEmployee(empId));
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> employeeService.deleteEmployee(empId));
+
+        System.out.println(exception.getMessage());
+        //then
+        // Verify that findById was called once with the specified ID
+        verify(employeeRepository, times(1)).findById(empId);
+
+        // Verify that deleteById was not called
+        verify(employeeRepository, never()).deleteById(empId);
+
+        // Assert the exception message
+        /* this we can call when we are creating that object of class 'ResourceNotFoundException', or else we can't.
+         Syntax: assertEquals(expected, actual)
+         We use assertEquals to verify that the result of the actual operation is equal to the expected
+         If the actual value/method returns matches the expected value/method returns, the test will pass.
+         Otherwise, it will fail, indicating that something unexpected has occurred
+         */
+        assertEquals("Employee not found with given id : " + empId, exception.getMessage());
     }
 }

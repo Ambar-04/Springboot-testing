@@ -19,10 +19,12 @@ public class EmployeeRepositoryTests {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    private Employee employee;
+    private Employee employee;  //declaring here so, scope of the 'employee' variable is declared as a 'class-level' field ,
+                                // as we want to access it in other methods within the same class 'EmployeeRepositoryTests'
 
     @BeforeEach
     public void setUp(){
+        //Employee employee = Employee.builder() //'employee' variable is declared locally within the setUp() method. It's created and initialized within the method scope and ceases to exist once the method completes execution.
         employee = Employee.builder()
                 .firstName("Ambar")
                 .lastName("Adhikari")
@@ -91,8 +93,8 @@ public class EmployeeRepositoryTests {
         List<Employee> employeeList = employeeRepository.findAll();
 
         //then - verify the output
-//        assertThat(employeeList).isNull(); //'null' represents the absence of a value or the lack of an object reference.you can assign null to indicate that it currently has no reference to any object.
-        assertThat(employeeList).isNotNull(); //Verify that the list is not 'null'.
+//        assertThat(employeeList).isNull(); //'null' represents lack of an object 'reference'.you can assign null to indicate that it currently has no reference to any object.
+        assertThat(employeeList).isNotNull(); //Verify that the list is not 'null'. means it has a reference
         assertThat(employeeList).isEmpty(); //Verify that the list is empty. [] represents an 'empty' array, meaning an array that contains no elements.
         assertThat(employeeList.size()).isEqualTo(0);
     }
@@ -111,7 +113,8 @@ public class EmployeeRepositoryTests {
             employeeRepository.save(employee);
 
             //when - action or the behaviour that we are going test
-            Employee saved_Employee = employeeRepository.findById(employee.getId()).get();
+            // Employee saved_Employee = employeeRepository.findById(employee.getId()).get();
+            Optional<Employee> saved_Employee= employeeRepository.findById(employee.getId());
 
             //then - verify the output
             assertThat(saved_Employee).isNotNull();
@@ -266,6 +269,7 @@ public class EmployeeRepositoryTests {
 
         employeeRepository.save(employee);
 
+        // Giving names which don't exist in database
         String firstName = "MS";
         String lastName = "Jana";
 
