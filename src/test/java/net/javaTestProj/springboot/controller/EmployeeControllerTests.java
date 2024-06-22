@@ -158,12 +158,12 @@ public class EmployeeControllerTests {
     @Test
     public void givenInvalidEmployeeId_whenGetEmployeeById_thenReturnEmpty() throws Exception {
         //given - precondition or setup
-        long employeeId = -2L;
-//        Employee employee = Employee.builder().
-//                firstName("Ambar").
-//                lastName("Adhikari").
-//                email("ambar@cts.com").
-//                build();
+       long employeeId = -2L;
+       Employee employee = Employee.builder().
+               firstName("Ambar").
+               lastName("Adhikari").
+               email("ambar@cts.com").
+               build();
 
         given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty());
 
