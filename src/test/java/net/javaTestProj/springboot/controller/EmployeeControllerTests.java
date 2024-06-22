@@ -35,43 +35,35 @@ public class EmployeeControllerTests {
     private ObjectMapper objectMapper; //used to convert Java objects to JSON (serialization) and JSON to Java objects (deserialization)
 
     //JUnit test for Create Employee REST API
-//    @Test
-//    public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
-//        //given - precondition or setup
-//        Employee employee = Employee.builder().
-//                firstName("Ambar").
-//                lastName("Adhikari").
-//                email("ambar@cts.com").
-//                build();
-//
-//        BDDMockito.given(employeeService.saveEmployee(ArgumentMatchers.any(Employee.class)))
-//                .willAnswer((invocation) -> invocation.getArgument(0));
-//
-//        //when - action or the behaviour that we are going test
-//        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("/api/employees")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(employee)));
-//
-//        //then - verify the output
-//        response.andDo(MockMvcResultHandlers.print())
-//                .andExpect(MockMvcResultMatchers.status().isCreated())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", CoreMatchers.is(employee.getFirstName())))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", CoreMatchers.is(employee.getLastName())))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.email", CoreMatchers.is(employee.getEmail())));
-//
+// @Test
+// public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
+//     //given - precondition or setup
+//     Employee employee = Employee.builder().
+//             firstName("Ambar").
+//             lastName("Adhikari").
+//             email("ambar@cts.com").
+//             build();
+
+//     // whenever employeeService.saveEmployee is called with any Employee object, the method will return that same Employee object,
+//     // mimicking the behavior of a typical save operation where the saved entity is returned. But it's not actually saving,rather mocking
+//     BDDMockito.given(employeeService.saveEmployee(ArgumentMatchers.any(Employee.class)))
+//             .willAnswer((invocation) -> invocation.getArgument(0));
+
+//     //when - action or the behaviour that we are going test
+//     //return type of the mockMvc.perform method in the Spring MockMvc framework is ResultActions.
+//     ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("/api/employees")
+//             .contentType(MediaType.APPLICATION_JSON)
+//             .content(objectMapper.writeValueAsString(employee)));
+
+//     //then - verify the output
+//     response.andDo(MockMvcResultHandlers.print())
+//             .andExpect(MockMvcResultMatchers.status().isCreated())
+//             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", CoreMatchers.is(employee.getFirstName())))
+//             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", CoreMatchers.is(employee.getLastName())))
+//             .andExpect(MockMvcResultMatchers.jsonPath("$.email", CoreMatchers.is(employee.getEmail())));
+
 //    }
 
-    // For this test case the response from controller is structured differently than what was initially assumed.
-//    {
-//        "Message": "New employee added",
-//            "HttpStatus": "CREATED",
-//            "Data": {
-//                "id": 1,
-//                "firstName": "Ambar",
-//                "lastName": "Adhikari",
-//                "email": "ambar@cts.com"
-//              }
-//    }
     @Test
     public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
         //given - precondition or setup
