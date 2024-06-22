@@ -28,11 +28,11 @@ public class EmployeeControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockBean //tells Spring to create a mock object of EmployeeService and register it in application context so it can be used by EmployeeController
     private EmployeeService employeeService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper; //used to convert Java objects to JSON (serialization) and JSON to Java objects (deserialization)
 
     //JUnit test for Create Employee REST API
 //    @Test
