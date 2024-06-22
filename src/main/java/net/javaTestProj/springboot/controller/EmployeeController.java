@@ -91,7 +91,7 @@ public class EmployeeController {
             savedEmployee.setFirstName(employee.getFirstName());
             savedEmployee.setLastName(employee.getLastName());
             savedEmployee.setEmail(employee.getEmail());
-
+       //savedEmployee now holds all the updated values 
             Employee updatedEmployee = employeeService.updateEmployee(savedEmployee);
             response = ResponseHandler.responseHandler(HttpStatus.OK, "Employee updated successfully", updatedEmployee);
         } else {
