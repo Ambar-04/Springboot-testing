@@ -26,7 +26,7 @@ import static org.hamcrest.CoreMatchers.is;
 public class EmployeeControllerTests {
 
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mockMvc; //lets you test your web controllers by pretending to send web browser requests and checking the responses,without running a web server.
 
     @MockBean //tells Spring to create a mock object of EmployeeService and register it in application context so it can be used by EmployeeController
     private EmployeeService employeeService;
