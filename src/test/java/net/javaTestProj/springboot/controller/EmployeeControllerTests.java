@@ -148,7 +148,8 @@ public class EmployeeControllerTests {
                 .andExpect(jsonPath("$.Data.lastName", is(employee.getLastName())))
                 .andExpect(jsonPath("$.Data.email", is(employee.getEmail())));
 
-        //** in employeeId = -2L , we can pass any id and it will pass test case
+        //** in employeeId = -2L , we can pass any id and it will pass test case 
+        //as service method getEmployeeById is mocked to always return the same Employee object regardless of the ID passed
         //You can't get the EXACT Id value in the response because we haven't set the id in the Employee build object.
         //If you want id in the response then set Id(1L) to the above object.
         //In a real-time project, we get the id in the response because it exists in the database.
