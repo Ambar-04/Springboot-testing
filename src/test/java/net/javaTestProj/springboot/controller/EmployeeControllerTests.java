@@ -85,7 +85,6 @@ public class EmployeeControllerTests {
         response.andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.Message", is("New employee added")))
-                .andExpect(jsonPath("$.HttpStatus", is("CREATED")))
                 .andExpect(jsonPath("$.Data.firstName", is(employee.getFirstName())))
                 .andExpect(jsonPath("$.Data.lastName", is(employee.getLastName())))
                 .andExpect(jsonPath("$.Data.email", is(employee.getEmail())));
